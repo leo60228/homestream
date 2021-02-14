@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cd src; trap 'kill $(jobs -p)' EXIT; parcel index.html *.wasm & sleep 1; firefox http://127.0.0.1:1234/index.html & wait",
-    "build": "cd src; parcel build -d ../dist index.html *.wasm"
+    "build": "cd src; parcel build -d ../dist index.html *.wasm",
+    "deploy": "npm run build && cd dist && git add -A && (git commit -m upd8 && git push || true)"
   },
   "author": "leo60228",
   "license": "GPL-2.0-only",
