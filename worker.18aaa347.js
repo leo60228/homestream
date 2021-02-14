@@ -17,4 +17,4 @@ const t=require("./libmp3lame.js");class e{constructor(){this._channels=null,thi
 },{"./libmp3lame.js":"TX13"}],"iltZ":[function(require,module,exports) {
 "use strict";var e=t(require("libmp3lame.js"));function t(e){return e&&e.__esModule?e:{default:e}}const n=441e3;addEventListener("message",async t=>{const[s,a]=t.data,l=Math.ceil(s.length/n);console.log(`${l} chunks`);let o=0;async function c(){if(o>=l)return void postMessage(null);console.log(`starting chunk ${o}`);const t=o*n,c=Math.min((o+1)*n,s.length),i=s.subarray(t,c),u=a.subarray(t,c);let r=new e.default;r.setChannels(2),r.setInputSampleRate(44100),r.setOutputSampleRate(22050),r.setBitrate(48);let d=await r.build(10485760,"libmp3lame.wasm");console.time("encoding"),console.log("encoding"),d.encodeFloats(i,u),d.flush(),console.timeEnd("encoding");const f=d.buffer(),g=f.buffer.slice(f.byteOffset,f.byteOffset+f.byteLength);postMessage(g),o++}addEventListener("message",c),c()},{once:!0});
 },{"libmp3lame.js":"NqeO"}]},{},["iltZ"], null)
-//# sourceMappingURL=/worker.18aaa347.js.map
+//# sourceMappingURL=worker.18aaa347.js.map
