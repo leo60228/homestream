@@ -1,11 +1,24 @@
 import AudioFeeder from 'audio-feeder';
+import hsmusicData from './hsmusic.json';
+import _ from 'lodash';
+
+const tracks = hsmusicData.flatMap(x => x.tracks);
+const allUrls = tracks.flatMap(x => x.urls);
+const bandcampUrls = allUrls.filter(x => x.startsWith('https://homestuck.bandcamp.com/track/'));
 
 function corsFetch(url, options) {
     return fetch(`https://c.l3.pm/?${encodeURIComponent(url)}`, options);
 }
 
+function getChannels(audio) {
+    return _.times(2, x => audio.getChannelData(x));
+}
+
 async function main() {
-    const htmlReq = await corsFetch('https://homestuck.bandcamp.com/track/megalovania-2');
+    const url = _.sample(bandcampUrls);
+    console.log(url);
+
+    const htmlReq = await corsFetch(url);
     const htmlText = await htmlReq.text();
 
     const domParser = new DOMParser();
@@ -52,7 +65,7 @@ async function main() {
             playButton.addEventListener('click', () => {
                 feeder.init(2, 44100);
                 feeder.bufferThreshold = 3;
-                feeder.bufferData([encodedAudio.getChannelData(0), encodedAudio.getChannelData(1)]);
+                feeder.bufferData(getChannels(encodedAudio));
                 feeder.start();
                 feeder.onbufferlow = function() {
                     console.log('buffer low');
@@ -73,12 +86,12 @@ async function main() {
             encoder.postMessage(null);
         } else {
             console.log('giving feeder data');
-            feeder.bufferData([encodedAudio.getChannelData(0), encodedAudio.getChannelData(1)]);
+            feeder.bufferData(getChannels(encodedAudio));
             requested = false;
         }
     };
 
-    encoder.postMessage([audio.getChannelData(0), audio.getChannelData(1)]);
+    encoder.postMessage(getChannels(audio));
 };
 
 main();
