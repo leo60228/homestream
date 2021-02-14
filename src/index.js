@@ -1,10 +1,6 @@
 import AudioFeeder from 'audio-feeder';
-import hsmusicData from './hsmusic.json';
+import bandcampUrls from './urls.json';
 import _ from 'lodash';
-
-const tracks = hsmusicData.flatMap(x => x.tracks);
-const allUrls = tracks.flatMap(x => x.urls);
-const bandcampUrls = allUrls.filter(x => x.startsWith('https://homestuck.bandcamp.com/track/'));
 
 function corsFetch(url, options) {
     return fetch(`https://c.l3.pm/?${encodeURIComponent(url)}`, options);
