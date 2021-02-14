@@ -1,0 +1,22 @@
+{
+  "name": "homestream",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd src; trap 'kill $(jobs -p)' EXIT; parcel index.html *.wasm & sleep 1; firefox http://127.0.0.1:1234/index.html & wait"
+  },
+  "author": "leo60228",
+  "license": "GPL-2.0-only",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "audio-feeder": "^0.5.0",
+    "libmp3lame.js": "^1.0.0"
+  },
+  "browserslist": [
+    "last 1 Firefox version"
+  ]
+}
