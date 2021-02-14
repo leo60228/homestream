@@ -17,15 +17,13 @@ async function main() {
     const songReq = await corsFetch(file);
     const data = await songReq.arrayBuffer();
 
-    const audioCtx = new AudioContext({ sampleRate: 44100 });
+    const audioCtx = new OfflineAudioContext(2, 1, 44100);
 
     console.time('decoding');
     const audio = await audioCtx.decodeAudioData(data);
     console.timeEnd('decoding');
 
     let feeder = new AudioFeeder();
-    feeder.init(2, 44100);
-    feeder.bufferThreshold = 3;
 
     let encoder = new Worker('worker.js');
     let started = false;
@@ -49,13 +47,12 @@ async function main() {
         const encodedAudio = await audioCtx.decodeAudioData(encodedBuffer);
         console.timeEnd('decoding');
 
-        feeder.bufferData([encodedAudio.getChannelData(0), encodedAudio.getChannelData(1)]);
-
-        requested = false;
-
         if (!started) {
             const playButton = document.getElementById('play');
             playButton.addEventListener('click', () => {
+                feeder.init(2, 44100);
+                feeder.bufferThreshold = 3;
+                feeder.bufferData([encodedAudio.getChannelData(0), encodedAudio.getChannelData(1)]);
                 feeder.start();
                 feeder.onbufferlow = function() {
                     console.log('buffer low');
@@ -74,6 +71,10 @@ async function main() {
             console.log('feeder wants more, requesting');
             requested = true;
             encoder.postMessage(null);
+        } else {
+            console.log('giving feeder data');
+            feeder.bufferData([encodedAudio.getChannelData(0), encodedAudio.getChannelData(1)]);
+            requested = false;
         }
     };
 
