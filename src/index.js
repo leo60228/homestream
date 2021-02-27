@@ -34,7 +34,7 @@ async function main() {
 
     let feeder = new AudioFeeder();
 
-    let encoder = new Worker('worker.js');
+    let encoder = new Worker(new URL('./worker.js', import.meta.url));
     let started = false;
 
     let requested = false;
